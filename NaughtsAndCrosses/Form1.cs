@@ -16,8 +16,12 @@ namespace NaughtsAndCrosses
         const string CROSS = "X";
         const string NOUGHT = "O";
 
+        int TurnNum = 0;
+
         string userMk = CROSS;
-        string cpuMK = NOUGHT;
+        string cpuMk = NOUGHT;
+
+        string turn = "";
 
         Button[,] grid;
         public Form1()
@@ -27,6 +31,59 @@ namespace NaughtsAndCrosses
                                    { btn01, btn11, btn21 },
                                    { btn02, btn12, btn22 } };
             Wipe();
+            turn = userMk;
+            
+        }
+
+        private void btn_Click(object sender, EventArgs e)
+        {
+            TurnNum++;
+            Console.WriteLine(TurnNum);
+            Button btn = (Button)sender;
+            int xCoord = int.Parse(btn.Name[3].ToString());
+            int yCoord = int.Parse(btn.Name[4].ToString());
+
+            HaveTurn(btn);
+            
+            // Debug // MessageBox.Show(xCoord.ToString()+ yCoord.ToString());
+        }
+
+        void HaveTurn(Button btn)
+        {
+            if (btn.Text == "")
+            {
+                btn.Text = turn; // place O or X
+                // check for win
+                if (LineCheck(turn))
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            grid[i, j].Text = "";
+                        }
+                    }
+
+                }
+                //check for draw
+                if (DrawCheck())
+                {
+                    Wipe();
+
+                }
+
+                // switches turn
+                if (turn == userMk)
+                {
+                    turn = cpuMk;
+                }
+                else
+                {
+                    turn = userMk;
+                }
+                // Increment Turn Number
+
+            }
         }
 
         private void Wipe()
@@ -38,35 +95,19 @@ namespace NaughtsAndCrosses
                     grid[i, j].Text = "";
                 }
             }
+            TurnNum = 0;
         }
 
-        private void btn_Click(object sender, EventArgs e)
+        private bool DrawCheck()
         {
-            Button btn = (Button)sender;
-            int xCoord = int.Parse(btn.Name[3].ToString());
-            int yCoord = int.Parse(btn.Name[4].ToString());
-
-            if (btn.Text == "")
+            if (TurnNum == 9)
             {
-                btn.Text = userMk; // place O or X
-                // check for win
-                if (LineCheck(userMk))
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            grid[i, j].Text = "";
-                        }
-                    }
-                    
-                }
-                // switches turn
+                return true;
             }
-
-            
-            
-            // Debug // MessageBox.Show(xCoord.ToString()+ yCoord.ToString());
+            else 
+            {
+                return false;
+            }
         }
 
         private bool LineCheck(string mark)
